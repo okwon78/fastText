@@ -56,22 +56,16 @@ if (NOT MSVC)
   install(FILES "${CMAKE_BINARY_DIR}/fasttext.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif()
 
-add_library(fasttext-shared SHARED ${SOURCE_FILES} ${HEADER_FILES})
+
 add_library(fasttext-static STATIC ${SOURCE_FILES} ${HEADER_FILES})
-add_library(fasttext-static_pic STATIC ${SOURCE_FILES} ${HEADER_FILES})
-set_target_properties(fasttext-shared PROPERTIES OUTPUT_NAME fasttext
-  SOVERSION "${fasttext_VERSION_MAJOR}")
+
 set_target_properties(fasttext-static PROPERTIES OUTPUT_NAME fasttext)
-set_target_properties(fasttext-static_pic PROPERTIES OUTPUT_NAME fasttext_pic
-  POSITION_INDEPENDENT_CODE True)
+
 add_executable(fasttext-bin src/main.cc)
 target_link_libraries(fasttext-bin pthread fasttext-static)
 set_target_properties(fasttext-bin PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" OUTPUT_NAME fasttext)
-install (TARGETS fasttext-shared
-    LIBRARY DESTINATION lib)
+
 install (TARGETS fasttext-static
-    ARCHIVE DESTINATION lib)
-install (TARGETS fasttext-static_pic
     ARCHIVE DESTINATION lib)
 install (TARGETS fasttext-bin
     RUNTIME DESTINATION bin

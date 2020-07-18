@@ -299,7 +299,7 @@ void FastText::printInfo(real progress, real loss, std::ostream& log_stream) {
   log_stream << " lr: " << std::setw(9) << std::setprecision(6) << lr;
   log_stream << " avg.loss: " << std::setw(9) << std::setprecision(6) << loss;
   log_stream << " ETA: " << utils::ClockPrint(eta);
-  log_stream << std::flush;
+  //log_stream << std::flush;
 }
 
 std::vector<int32_t> FastText::selectEmbeddings(int32_t cutoff) const {
