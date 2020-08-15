@@ -49,21 +49,19 @@ set(SOURCE_FILES
     src/utils.cc
     src/vector.cc)
 
-    
+
 if (NOT MSVC)
   include(GNUInstallDirs)
   configure_file("fasttext.pc.in" "fasttext.pc" @ONLY)
   install(FILES "${CMAKE_BINARY_DIR}/fasttext.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif()
 
-
 add_library(fasttext-static STATIC ${SOURCE_FILES} ${HEADER_FILES})
-
 set_target_properties(fasttext-static PROPERTIES OUTPUT_NAME fasttext)
+
 add_executable(fasttext-bin src/main.cc)
 target_link_libraries(fasttext-bin pthread fasttext-static)
 set_target_properties(fasttext-bin PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" OUTPUT_NAME fasttext)
-
 
 install (TARGETS fasttext-static
     ARCHIVE DESTINATION lib)
