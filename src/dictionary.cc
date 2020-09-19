@@ -101,13 +101,13 @@ const std::vector<int32_t> Dictionary::getSubwords(
     return ngrams;
 }
 
-void Dictionary::getSubwords(
-                             const std::string& word,
+void Dictionary::getSubwords(const std::string& word,
                              std::vector<int32_t>& ngrams,
                              std::vector<std::string>& substrings) const {
     int32_t i = getId(word);
     ngrams.clear();
     substrings.clear();
+    
     if (i >= 0) {
         ngrams.push_back(i);
         substrings.push_back(words_[i].word);
@@ -210,8 +210,7 @@ bool Dictionary::readWord(std::istream& in, std::string& word) const {
     std::streambuf& sb = *in.rdbuf();
     word.clear();
     while ((c = sb.sbumpc()) != EOF) {
-        if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
-            c == '\f' || c == '\0') {
+        if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' || c == '\f' || c == '\0') {
             if (word.empty()) {
                 if (c == '\n') {
                     word += EOS;
@@ -265,20 +264,18 @@ void Dictionary::threshold(int64_t t, int64_t tl) {
         }
         return e1.count > e2.count;
     });
-    words_.erase(
-                 remove_if(
-                           words_.begin(),
-                           words_.end(),
-                           [&](const entry& e) {
-        return (e.type == entry_type::word && e.count < t) ||
-        (e.type == entry_type::label && e.count < tl);
-    }),
-                 words_.end());
+    
+    words_.erase(remove_if(words_.begin(), words_.end(), [&](const entry& e)
+    {
+        return (e.type == entry_type::word && e.count < t) || (e.type == entry_type::label && e.count < tl);
+    }), words_.end());
+    
     words_.shrink_to_fit();
     size_ = 0;
     nwords_ = 0;
     nlabels_ = 0;
     std::fill(word2int_.begin(), word2int_.end(), -1);
+    
     for (auto it = words_.begin(); it != words_.end(); ++it) {
         int32_t h = find(it->word);
         word2int_[h] = size_++;

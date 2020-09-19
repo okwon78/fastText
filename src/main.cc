@@ -290,8 +290,7 @@ void printNgrams(const std::vector<std::string> args) {
     fasttext.loadModel(std::string(args[2]));
     
     std::string word(args[3]);
-    std::vector<std::pair<std::string, Vector>> ngramVectors =
-    fasttext.getNgramVectors(word);
+    std::vector<std::pair<std::string, Vector>> ngramVectors = fasttext.getNgramVectors(word);
     
     for (const auto& ngramVector : ngramVectors) {
         std::cout << ngramVector.first << " " << ngramVector.second << std::endl;

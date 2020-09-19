@@ -20,6 +20,7 @@ namespace fasttext {
 Args::Args() {
     lr = 0.05;
     dim = 100;
+
     epoch = 5;
     ws = 5;                     //size of the context window
     minCount = 5;               //minimal number of word occurrences
@@ -34,7 +35,7 @@ Args::Args() {
     wordNgrams = 1;
     model = model_name::sg;
     bucket = 2000000;
-    thread = 12;
+    thread = 1;
     lrUpdateRate = 100;
     
     label = "__label__";
@@ -53,7 +54,6 @@ Args::Args() {
     autotunePredictions = 1;
     autotuneDuration = 60 * 5; // 5 minutes
     autotuneModelSize = "";
-    thread = 0;
 }
 
 std::string Args::lossToString(loss_name ln) const {

@@ -19,7 +19,8 @@ namespace fasttext {
 
 DenseMatrix::DenseMatrix() : DenseMatrix(0, 0) {}
 
-DenseMatrix::DenseMatrix(int64_t m, int64_t n) : Matrix(m, n), data_(m * n) {}
+DenseMatrix::DenseMatrix(int64_t m, int64_t n)
+: Matrix(m, n), data_(m * n) {}
 
 DenseMatrix::DenseMatrix(DenseMatrix&& other) noexcept
 : Matrix(other.m_, other.n_), data_(std::move(other.data_)) {}

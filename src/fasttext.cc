@@ -152,13 +152,11 @@ void FastText::saveOutput(const std::string& filename) {
         throw std::invalid_argument(
                                     "Option -saveOutput is not supported for quantized models.");
     }
-    int32_t n =
-    (args_->model == model_name::sup) ? dict_->nlabels() : dict_->nwords();
+    int32_t n = (args_->model == model_name::sup) ? dict_->nlabels() : dict_->nwords();
     ofs << n << " " << args_->dim << std::endl;
     Vector vec(args_->dim);
     for (int32_t i = 0; i < n; i++) {
-        std::string word = (args_->model == model_name::sup) ? dict_->getLabel(i)
-        : dict_->getWord(i);
+        std::string word = (args_->model == model_name::sup) ? dict_->getLabel(i) : dict_->getWord(i);
         vec.zero();
         vec.addRow(*output_, i);
         ofs << word << " " << vec << std::endl;
@@ -532,12 +530,12 @@ std::vector<std::pair<std::string, Vector>> FastText::getNgramVectors(const std:
 void FastText::precomputeWordVectors(DenseMatrix& wordVectors) {
     Vector vec(args_->dim);
     wordVectors.zero();
-    
+
     for (int32_t i = 0; i < dict_->nwords(); i++) {
         std::string word = dict_->getWord(i);
         getWordVector(vec, word);
         real norm = vec.norm();
-        
+
         if (norm > 0) {
             wordVectors.addVectorToRow(vec, i, 1.0 / norm);
         }
@@ -636,11 +634,12 @@ void FastText::trainThread(int32_t threadId, const TrainCallback& callback) {
     try {
         while (keepTraining(ntokens)) {
             real progress = real(tokenCount_) / (args_->epoch * ntokens);
-            
+
             if (callback && ((callbackCounter++ % 64) == 0)) {
                 double wst;
                 double lr;
                 int64_t eta;
+
                 std::tie<double, double, int64_t>(wst, lr, eta) = progressInfo(progress);
                 callback(progress, loss_, wst, lr, eta);
             }
@@ -673,22 +672,23 @@ void FastText::trainThread(int32_t threadId, const TrainCallback& callback) {
     ifs.close();
 }
 
-std::shared_ptr<Matrix> FastText::getInputMatrixFromFile(
-                                                         const std::string& filename) const {
+std::shared_ptr<Matrix> FastText::getInputMatrixFromFile(const std::string& filename) const {
     std::ifstream in(filename);
-    std::vector<std::string> words;
-    std::shared_ptr<DenseMatrix> mat; // temp. matrix for pretrained vectors
-    int64_t n, dim;
     if (!in.is_open()) {
         throw std::invalid_argument(filename + " cannot be opened for loading!");
     }
+    
+    int64_t n, dim;
     in >> n >> dim;
+    
     if (dim != args_->dim) {
-        throw std::invalid_argument(
-                                    "Dimension of pretrained vectors (" + std::to_string(dim) +
+        throw std::invalid_argument("Dimension of pretrained vectors (" + std::to_string(dim) +
                                     ") does not match dimension (" + std::to_string(args_->dim) + ")!");
     }
-    mat = std::make_shared<DenseMatrix>(n, dim);
+    
+    std::shared_ptr<DenseMatrix> mat = std::make_shared<DenseMatrix>(n, dim);
+    std::vector<std::string> words;
+    
     for (size_t i = 0; i < n; i++) {
         std::string word;
         in >> word;
@@ -702,8 +702,7 @@ std::shared_ptr<Matrix> FastText::getInputMatrixFromFile(
     
     dict_->threshold(1, 0);
     dict_->init();
-    std::shared_ptr<DenseMatrix> input = std::make_shared<DenseMatrix>(
-                                                                       dict_->nwords() + args_->bucket, args_->dim);
+    std::shared_ptr<DenseMatrix> input = std::make_shared<DenseMatrix>(dict_->nwords() + args_->bucket, args_->dim);
     input->uniform(1.0 / args_->dim, args_->thread, args_->seed);
     
     for (size_t i = 0; i < n; i++) {
@@ -719,18 +718,15 @@ std::shared_ptr<Matrix> FastText::getInputMatrixFromFile(
 }
 
 std::shared_ptr<Matrix> FastText::createRandomMatrix() const {
-    std::shared_ptr<DenseMatrix> input = std::make_shared<DenseMatrix>(
-                                                                       dict_->nwords() + args_->bucket, args_->dim);
+    std::shared_ptr<DenseMatrix> input = std::make_shared<DenseMatrix>(dict_->nwords() + args_->bucket, args_->dim);
     input->uniform(1.0 / args_->dim, args_->thread, args_->seed);
     
     return input;
 }
 
 std::shared_ptr<Matrix> FastText::createTrainOutputMatrix() const {
-    int64_t m =
-    (args_->model == model_name::sup) ? dict_->nlabels() : dict_->nwords();
-    std::shared_ptr<DenseMatrix> output =
-    std::make_shared<DenseMatrix>(m, args_->dim);
+    int64_t m = (args_->model == model_name::sup) ? dict_->nlabels() : dict_->nwords();
+    std::shared_ptr<DenseMatrix> output = std::make_shared<DenseMatrix>(m, args_->dim);
     output->zero();
     
     return output;
