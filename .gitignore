@@ -4,9 +4,9 @@
 *.vec
 *.bc
 .DS_Store
-data
+data/
 fasttext
-result
+result/
 website/node_modules/
 package-lock.json
 node_modules/
