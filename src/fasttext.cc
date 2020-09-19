@@ -532,12 +532,12 @@ std::vector<std::pair<std::string, Vector>> FastText::getNgramVectors(const std:
 void FastText::precomputeWordVectors(DenseMatrix& wordVectors) {
     Vector vec(args_->dim);
     wordVectors.zero();
-    
+
     for (int32_t i = 0; i < dict_->nwords(); i++) {
         std::string word = dict_->getWord(i);
         getWordVector(vec, word);
         real norm = vec.norm();
-        
+
         if (norm > 0) {
             wordVectors.addVectorToRow(vec, i, 1.0 / norm);
         }
@@ -636,11 +636,12 @@ void FastText::trainThread(int32_t threadId, const TrainCallback& callback) {
     try {
         while (keepTraining(ntokens)) {
             real progress = real(tokenCount_) / (args_->epoch * ntokens);
-            
+
             if (callback && ((callbackCounter++ % 64) == 0)) {
                 double wst;
                 double lr;
                 int64_t eta;
+
                 std::tie<double, double, int64_t>(wst, lr, eta) = progressInfo(progress);
                 callback(progress, loss_, wst, lr, eta);
             }

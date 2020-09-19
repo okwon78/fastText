@@ -20,6 +20,7 @@ namespace fasttext {
 Args::Args() {
     lr = 0.05;
     dim = 100;
+
     epoch = 5;
     ws = 5;                     //size of the context window
     minCount = 5;               //minimal number of word occurrences
